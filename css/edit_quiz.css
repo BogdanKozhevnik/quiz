@@ -1,0 +1,64 @@
+.admin_tools{
+    margin: 5px;
+    position: relative;
+    display: inline-block;
+            float: left;
+}
+fieldset {
+    width: 450px;
+    margin-bottom: 4px;
+}
+input[readonly="readonly"] {
+    /*border:0px;*/
+    background:none;
+    border:none;
+    outline:none;
+}
+.container-txt{
+    margin-bottom: 3px;
+}
+.container-btn{
+    margin-bottom: 3px;
+}
+/*#floatTip {*/
+/*    position: absolute; !* Абсолютное позиционирование *!*/
+/*    width: 250px; !* Ширина блока *!*/
+/*    display: none; !* Прячем от показа *!*/
+/*    border: 1px solid #000; !* Параметры рамки *!*/
+/*    padding: 4px; !* Поля вокруг  текста *!*/
+/*    font-family: sans-serif; !* Рубленый шрифт *!*/
+/*    font-size: 9pt; !* Размер  шрифта *!*/
+/*    color: #333; !* Цвет текста *!*/
+/*    background: #ffe5ff; !* Цвет фона *!*/
+/*}*/
+.label_quiz{
+    margin: 5px;
+    font-weight: bold;
+    /*float: left;*/
+}
+.id_quiz{
+    margin: 5px;
+    width: 60px;
+    height: 20px;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+    background: #9AC7DA;
+    border: #0A246A 3px;
+    border-radius:30px;
+    /*outline: none;*/
+
+}
+
+/*.save_result{*/
+/*    margin: 5px;*/
+/*    position: relative;*/
+/*    display: inline;*/
+/*    float: left;*/
+/*}*/
+/*.publish_result{*/
+/*    margin: 5px;*/
+/*    position: relative;*/
+/*    display: inline;*/
+/*    float: left;*/
+/*}*/

@@ -1,0 +1,9 @@
+.quiz_list{
+    width: 400px;
+    border-radius: 10%;
+}
+.quiz_list_second{
+    width: 400px;
+    border-radius: 50px;
+    /*border-radius: 10%;*/
+}
