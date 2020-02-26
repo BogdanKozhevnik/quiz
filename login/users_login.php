@@ -14,10 +14,10 @@ $mysqli = new mysqli($servername, $username, $password, $dbname);
 // NOTE: all rows except last must have comma "," at the end of line
 //$check_sql = $mysqli->query("SELECT `login`, `password` FROM `users` UNION SELECT `login`, `password` FROM `admin`");
 //$check_arr = $check_sql->fetch_all();
-    $check_admin_sql = $mysqli->query("SELECT `login`, `password` FROM `admin`");
+    $check_admin_sql = $mysqli->query("SELECT `email`, `password` FROM `admin`");
     $check_admin = $check_admin_sql->fetch_all();
     $admin = [$check_admin[0][0]=>$check_admin[0][1]];
-    $check_users_sql = $mysqli->query("SELECT `login`, `password` FROM `users`");
+    $check_users_sql = $mysqli->query("SELECT `email`, `password` FROM `users`");
     $check_users = $check_users_sql->fetch_all();
     $check_arr = array_merge($check_admin, $check_users);
 if (empty($check_arr)) {
@@ -25,10 +25,10 @@ if (empty($check_arr)) {
     } else {
 
     foreach ($check_arr as $item=> $value) {
-        $login_db = $check_arr[$item]['0'];
+        $email_db = $check_arr[$item]['0'];
         $password_db = $check_arr[$item]['1'];
 
-        $LOGIN_INFORMATION[$login_db] = $password_db;
+        $LOGIN_INFORMATION[$email_db] = $password_db;
     }
 }
 
@@ -80,9 +80,10 @@ if(!function_exists('showLoginPasswordProtect')) {
         <div style="width:500px; margin-left:auto; margin-right:auto; text-align:center">
             <form method="post">
                 <h3>Введите имя пользователя и пароль:</h3>
-                <font color="red"><?php echo $error_msg; ?></font><br />
-                <?php if (USE_USERNAME) echo 'Пользователь:<br /><input type="input" name="access_login" /><br />Пароль:<br />'; ?>
-                <input type="password" name="access_password" /><p></p>
+                <font color="red"><?php echo $error_msg; ?></font><br />Пользователь:<br />
+                <input type="input" name="access_login" /><br />E-mail:<br />
+                <?php if (USE_USERNAME) echo '<input type="email" name="access_email" required="required" /><br />Пароль:<br />' ;?>
+                <input type="password" name="access_password" required="required" /><p></p>
                 <input type="submit" name="Submit" value="Войти" />
                 <input type="submit" name="register" value="Зарегистрироваться" />
             </form>
@@ -98,17 +99,18 @@ if(!function_exists('showLoginPasswordProtect')) {
 }
 
 if (isset($_POST['register'])) {
-    $login = isset($_POST['access_login']) ? $_POST['access_login'] : '';
+    $login = isset($_POST['access_login']);
+    $eMail = isset($_POST['access_email']) ? $_POST['access_email'] : '';
     $pass = $_POST['access_password'];
     $reset_auto_increment = $mysqli->query("ALTER TABLE `users` AUTO_INCREMENT = 1");
-    $register = $mysqli->query("INSERT INTO `users` (`id`, `login`, `password`) VALUES  ( NULL, '$login', '$pass')");
+    $register = $mysqli->query("INSERT INTO `users` (`id`, `login`, `password`) VALUES  ( NULL, `$login`, '$eMail', '$pass')");
     showLoginPasswordProtect("");
 }
 
 // user provided password
-if (isset($_POST['access_password'])) {
+if (isset($_POST['access_password']) && isset($_POST['access_email'])) {
 
-    $login = isset($_POST['access_login']) ? $_POST['access_login'] : '';
+    $eMail = isset($_POST['access_email']) ? $_POST['access_email'] : '';
     $pass = $_POST['access_password'];
 
     if (empty($check_arr)) {
@@ -117,29 +119,30 @@ if (isset($_POST['access_password'])) {
     }
     else {
         foreach ($LOGIN_INFORMATION as $user=>$password ) {
-            if (array_key_exists($login, $LOGIN_INFORMATION)) {
-                $login_db = $user;
+            if ($eMail == $user) {
+                $email_db = $user;
+                $password_db = $password;
+                $true = array_key_exists($eMail, $LOGIN_INFORMATION);
             }
         }
-        $password_db = $password;
 //        $password_db = array_search($pass, $LOGIN_INFORMATION); // return value, need key
     }
 
     $LOGIN_INFORMATION = array(
-        "$login_db" => "$password_db");
+        "$email_db" => "$password_db");
 
-    if (USE_USERNAME && ( !array_key_exists($login, $LOGIN_INFORMATION))) {
+    if (USE_USERNAME && ( !array_key_exists($eMail, $LOGIN_INFORMATION))) {
 //    (!USE_USERNAME && !in_array($pass, $LOGIN_INFORMATION) || (USE_USERNAME && ( !array_key_exists($login, $LOGIN_INFORMATION) || $LOGIN_INFORMATION[$login] != $pass ) )
-        showLoginPasswordProtect("Такого пользователя нет!");
+        showLoginPasswordProtect("Пользователя с таким e-mail нет!");
     }
-    else if (!USE_USERNAME && !in_array($pass, $LOGIN_INFORMATION) || $LOGIN_INFORMATION[$login] != $pass) {
-        showLoginPasswordProtect("Логин и пароль не совпадают!");
+    else if (!USE_USERNAME && !in_array($pass, $LOGIN_INFORMATION) || $LOGIN_INFORMATION[$eMail] != $pass) {
+        showLoginPasswordProtect("Е-mail и пароль не совпадают!");
         } else {
         // set cookie if password was validated
-        setcookie("verify", md5($login.'%'.$pass), $timeout, '/');
+        setcookie("verify", md5($eMail.'%'.$pass), $timeout, '/');
         // Some programs (like Form1 Bilder) check $_POST array to see if parameters passed
         // So need to clear password protector variables
-        unset($_POST['access_login']);
+        unset($_POST['access_email']);
         unset($_POST['access_password']);
         unset($_POST['Submit']);
     }
