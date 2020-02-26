@@ -12,14 +12,8 @@ $mysqli = new mysqli($servername, $username, $password, $dbname);
 
 // Add login/password pairs below, like described above
 // NOTE: all rows except last must have comma "," at the end of line
-//$check_sql = $mysqli->query("SELECT `login`, `password` FROM `users` UNION SELECT `login`, `password` FROM `admin`");
-//$check_arr = $check_sql->fetch_all();
-    $check_admin_sql = $mysqli->query("SELECT `login`, `password` FROM `admin`");
-    $check_admin = $check_admin_sql->fetch_all();
-    $admin = [$check_admin[0][0]=>$check_admin[0][1]];
-    $check_users_sql = $mysqli->query("SELECT `login`, `password` FROM `users`");
-    $check_users = $check_users_sql->fetch_all();
-    $check_arr = array_merge($check_admin, $check_users);
+    $check_sql = $mysqli->query("SELECT `login`, `password` FROM `users` UNION SELECT `login`, `password` FROM `admin`");
+    $check_arr = $check_sql->fetch_all();
 if (empty($check_arr)) {
         echo ("Пользователей нет. база пуста!");
     } else {
@@ -108,33 +102,35 @@ if (isset($_POST['register'])) {
 // user provided password
 if (isset($_POST['access_password'])) {
 
+    $check_sql = $mysqli->query("SELECT `login`, `password` FROM `users` UNION SELECT `login`, `password` FROM `admin`");
+    $check_arr = $check_sql->fetch_all();
+    if (empty($check_arr)) {
+        showLoginPasswordProtect("Зарегистрируйтесь!");
+    }
+
     $login = isset($_POST['access_login']) ? $_POST['access_login'] : '';
     $pass = $_POST['access_password'];
 
+    $check_sql = $mysqli->query("SELECT `login`, `password` FROM `users` where `login`= '$login' and `password`= '$pass' UNION SELECT `login`, `password` FROM `admin` where `login`= '$login' and `password`= '$pass'");
+    $check_arr = $check_sql->fetch_all();
     if (empty($check_arr)) {
         error_reporting(E_ERROR | E_WARNING | E_PARSE);
         showLoginPasswordProtect("Вы не зарегистрированы, зарегистрируйтесь!");
     }
     else {
-        foreach ($LOGIN_INFORMATION as $user=>$password ) {
-            if (array_key_exists($login, $LOGIN_INFORMATION)) {
-                $login_db = $user;
-            }
-        }
-        $password_db = $password;
-//        $password_db = array_search($pass, $LOGIN_INFORMATION); // return value, need key
+        $login_db = $check_arr[0]['0'];
+        $password_db = $check_arr[0]['1'];
     }
 
     $LOGIN_INFORMATION = array(
         "$login_db" => "$password_db");
 
-    if (USE_USERNAME && ( !array_key_exists($login, $LOGIN_INFORMATION))) {
-//    (!USE_USERNAME && !in_array($pass, $LOGIN_INFORMATION) || (USE_USERNAME && ( !array_key_exists($login, $LOGIN_INFORMATION) || $LOGIN_INFORMATION[$login] != $pass ) )
+    if (!USE_USERNAME && !in_array($pass, $LOGIN_INFORMATION)
+        || (USE_USERNAME && ( !array_key_exists($login, $LOGIN_INFORMATION) || $LOGIN_INFORMATION[$login] != $pass ) )
+    ) {
         showLoginPasswordProtect("Такого пользователя нет!");
     }
-    else if (!USE_USERNAME && !in_array($pass, $LOGIN_INFORMATION) || $LOGIN_INFORMATION[$login] != $pass) {
-        showLoginPasswordProtect("Логин и пароль не совпадают!");
-        } else {
+    else {
         // set cookie if password was validated
         setcookie("verify", md5($login.'%'.$pass), $timeout, '/');
         // Some programs (like Form1 Bilder) check $_POST array to see if parameters passed

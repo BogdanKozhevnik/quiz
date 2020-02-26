@@ -2,8 +2,7 @@
 <html lang="ru">
 
 <?php
-//include("login/admin_access.php");
-include("login/users_login.php");
+include("login/admin_access.php");
 $servername="db";
 $username="root";
 $password="root";

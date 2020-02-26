@@ -79,17 +79,17 @@ foreach ($id_quiz_arr as $quiz => $index) { // покажчик id теста
     $cq = intval($id_quiz_arr[$quiz]['0']);
     $quiz_id = $cq;
 
-    $quiz_sql = $mysqli->query("SELECT `title`,`description` FROM  `quiz` WHERE `id_quiz`='$cq'");
-    $quiz_arr = $quiz_sql->fetch_array();
-    $quiz_title = $quiz_arr['title'];
-    $quiz_description = $quiz_arr['description'];
+$quiz_sql = $mysqli->query("SELECT `title`,`description` FROM  `quiz` WHERE `id_quiz`='$cq'");
+$quiz_arr = $quiz_sql->fetch_array();
+$quiz_title = $quiz_arr['title'];
+$quiz_description = $quiz_arr['description'];
 
     $count_question_all_sql = $mysqli->query("SELECT count(`id_question`) FROM  `questions`");
     $count_question_all_qrr = $count_question_all_sql->fetch_array();
     $count_question_all = intval($count_question_all_qrr[0]['0']);
 
-    $questions2_sql = $mysqli->query("SELECT `id_question`, `question` FROM `questions` WHERE `id_quiz`='$quiz_id'");
-    $questions2_arr = $questions2_sql->fetch_all();
+$questions2_sql = $mysqli->query("SELECT `id_question`, `question` FROM `questions` WHERE `id_quiz`='$quiz_id'");
+$questions2_arr = $questions2_sql->fetch_all();
 
     echo "<form method='post'>
 <div><fieldset class='fieldset'>
@@ -102,16 +102,16 @@ foreach ($id_quiz_arr as $quiz => $index) { // покажчик id теста
         $question2 = $questions2_arr[$item]['1'];
         $answers_sql = $mysqli->query("SELECT `id_answer`,`answer` FROM `answers` WHERE `id_question`='$question_id2'");
         $answers_arr2 = $answers_sql->fetch_all();
-        echo "<ul><li class='question' type='disc'>$question_id2<input type='text' value='$question2'/>
+    echo "<ul><li class='question' type='disc'>$question_id2<input type='text' value='$question2'/>
               <button name='del_question_$question_id2'>delete</button></li></ul>";
 
-        foreach ($answers_arr2 as $answ => $ans){
-            $answer_id = $answers_arr2[$answ]['0'];
-            $answer = $answers_arr2[$answ]['1'];
+    foreach ($answers_arr2 as $answ => $ans){
+        $answer_id = $answers_arr2[$answ]['0'];
+        $answer = $answers_arr2[$answ]['1'];
 
-            echo "<ul><li class='answer' type='circle'><input type='text' value='$answer'/><input type='checkbox' name='$answer_id'/></li></ul>";
-        }
-        echo "<input type='text' name='add_text_answer_$question_id2' class='add_text_answer'/><input type='checkbox' name='check_answer' class='check_answer'/>correct/wrong  
+    echo "<ul><li class='answer' type='circle'><input type='text' value='$answer'/><input type='checkbox' name='$answer_id'/></li></ul>";
+    }
+    echo "<input type='text' name='add_text_answer_$question_id2' class='add_text_answer'/><input type='checkbox' name='check_answer' class='check_answer'/>correct/wrong  
           <br><button name='add_answer_$question_id2' class='add_answer'>add answer</button><button name='delete_answer_$question_id2' class='delete_answer'>delete answer</button>";
     }
     $add_next_question = $count_question_group[$quiz_index]+1;
@@ -122,7 +122,7 @@ foreach ($id_quiz_arr as $quiz => $index) { // покажчик id теста
 </div>
 </div></fieldset>";
 
-    echo "</form>";
+echo "</form>";
 
 // delete quiz
     foreach ($id_quiz_arr as $id =>$quiz) {
@@ -153,37 +153,37 @@ foreach ($id_quiz_arr as $quiz => $index) { // покажчик id теста
 // add question
     foreach ($id_quiz_arr as $id => $quiz) {
         $quiz_id = $id_quiz_arr[$id]['0'];
-        if (isset($_POST['add_question_' . $quiz_id]) && $quiz_index<$count_quiz) {
-            $add_new_question_txt = $_POST['add_text_question_' . $quiz_id];
-            $reset_auto_increment = $mysqli->query("ALTER TABLE `questions` AUTO_INCREMENT = 1");
-            $add_new_question = $mysqli->query("INSERT INTO `questions` (`id_quiz`, `id_question`, `question`) VALUES ('$quiz_id', NULL, '$add_new_question_txt')");
-            header('refresh: 0');
+            if (isset($_POST['add_question_' . $quiz_id]) && $quiz_index<$count_quiz) {
+                $add_new_question_txt = $_POST['add_text_question_' . $quiz_id];
+                $reset_auto_increment = $mysqli->query("ALTER TABLE `questions` AUTO_INCREMENT = 1");
+                $add_new_question = $mysqli->query("INSERT INTO `questions` (`id_quiz`, `id_question`, `question`) VALUES ('$quiz_id', NULL, '$add_new_question_txt')");
+                header('refresh: 0');
+            }
+            clearstatcache();
         }
-        clearstatcache();
-    }
 
 // add answer
     foreach ($id_question_arr as $id => $question) {
         $question_id = $id_question_arr[$id]['0'];
-        if (isset($_POST['add_answer_' . $question_id]) && $quiz_index<$count_quiz) {
-            if (isset($_POST['check_answer'])) {
-                $checked = $_POST['check_answer'];
-                if ($checked == 'on') {
+            if (isset($_POST['add_answer_' . $question_id]) && $quiz_index<$count_quiz) {
+                if (isset($_POST['check_answer'])) {
+                    $checked = $_POST['check_answer'];
+                    if ($checked == 'on') {
 
-                    $add_new_answer_txt = $_POST['add_text_answer_' . $question_id];
-                    $reset_auto_increment = $mysqli->query("ALTER TABLE `answers` AUTO_INCREMENT = 1");
-                    $add_new_answer = $mysqli->query("INSERT INTO `answers` (`id_question`, `id_answer`, `answer`, `correct_answer`, `value`) VALUES  ('$question_id', NULL, '$add_new_answer_txt', '', 'correct')");
+                        $add_new_answer_txt = $_POST['add_text_answer_' . $question_id];
+                        $reset_auto_increment = $mysqli->query("ALTER TABLE `answers` AUTO_INCREMENT = 1");
+                        $add_new_answer = $mysqli->query("INSERT INTO `answers` (`id_question`, `id_answer`, `answer`, `correct_answer`, `value`) VALUES  ('$question_id', NULL, '$add_new_answer_txt', '', 'correct')");
                     header('refresh: 0');
-                }
-            } else {
-                $add_new_answer_txt = $_POST['add_text_answer_' . $question_id];
-                $reset_auto_increment = $mysqli->query("ALTER TABLE `answers` AUTO_INCREMENT = 1");
-                $add_new_answer = $mysqli->query("INSERT INTO `answers` (`id_question`, `id_answer`, `answer`, `correct_answer`, `value`) VALUES  ('$question_id', NULL, '$add_new_answer_txt', '', 'wrong')");
-                header('refresh: 0');
+                    }
+                } else {
+                        $add_new_answer_txt = $_POST['add_text_answer_' . $question_id];
+                        $reset_auto_increment = $mysqli->query("ALTER TABLE `answers` AUTO_INCREMENT = 1");
+                        $add_new_answer = $mysqli->query("INSERT INTO `answers` (`id_question`, `id_answer`, `answer`, `correct_answer`, `value`) VALUES  ('$question_id', NULL, '$add_new_answer_txt', '', 'wrong')");
+                    header('refresh: 0');
 
+                }
             }
         }
-    }
 
     // delete answer
     foreach ($id_question_arr as $id => $question) {
@@ -200,11 +200,11 @@ foreach ($id_quiz_arr as $quiz => $index) { // покажчик id теста
 
     $quiz_index+=1;
 // add new quiz
-    if (isset($_POST['add_new_quiz'])) {
-        clearstatcache();
-        header('Location: add_quiz.php');
-        exit;
-    }
+if (isset($_POST['add_new_quiz'])) {
+    clearstatcache();
+    header('Location: add_quiz.php');
+    exit;
+}
 }
 ?>
 

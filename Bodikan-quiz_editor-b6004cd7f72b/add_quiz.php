@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <?php
-include("login/users_login.php");
-//include("login/admin_access.php");
+include("login/admin_access.php");
 //require_once 'db_connection.php'; // подключаем скрипт
 //include 'db_connection.php';
 $servername="db";

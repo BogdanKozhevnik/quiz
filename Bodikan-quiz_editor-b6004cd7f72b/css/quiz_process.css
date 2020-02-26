@@ -1,0 +1,23 @@
+.quiz_list{
+    margin: 10px 20% 10px 30%;
+    position: fixed;
+}
+
+.quiz_fieldset{
+    width: 400px;
+
+}
+.quiz_fieldset2{
+    width: 400px;
+}
+.quizz{
+   /*text-align: center;*/
+margin: 10px 1% 10px 30%;
+   color: #0f3468;
+}
+
+.next{
+    margin: 10px 30% 10px 40%;
+    width: 70px;
+
+}

@@ -1,0 +1,70 @@
+.quiz{
+    margin-top: 10px;
+}
+.add_new_quiz{
+    margin: 5% 20% 10% 60%;
+    border-radius: 10px;
+    border: #002752;
+    background: #fc0; /* Цвет фона */
+    box-shadow: 0 0 10px rgba(0,0,0,0.5); /* Параметры тени */
+    padding: 10px;
+    position: fixed;
+    /*font-weight: bold;*/
+    -moz-animation: cycle 4s linear infinite;
+    -webkit-animation: cycle 4s linear infinite;
+}
+
+@-moz-keyframes cycle {
+    35% {transform: rotate(0) translate(0, 0);}
+    40% {transform: rotate(5deg) translate(0, -2px);}
+    45% {transform: rotate(-3deg) translate(0, -2px);}
+    50% {transform: rotate(5deg) translate(0, -2px);}
+    55% {transform: rotate(-3deg) translate(0, -2px);}
+    60% {transform: rotate(5deg) translate(0, -2px);}
+    65% {transform: rotate(-3deg) translate(0, -2px);}
+    70% {transform: rotate(0) translate(0, 0);}
+}
+
+@-webkit-keyframes cycle {
+    35% {transform: rotate(0) translate(0, 0);}
+    40% {transform: rotate(5deg) translate(0, -2px);}
+    45% {transform: rotate(-3deg) translate(0, -2px);}
+    50% {transform: rotate(5deg) translate(0, -2px);}
+    55% {transform: rotate(-3deg) translate(0, -2px);}
+    60% {transform: rotate(5deg) translate(0, -2px);}
+    65% {transform: rotate(-3deg) translate(0, -2px);}
+    70% {transform: rotate(0) translate(0, 0);}
+}
+.question{
+    margin-top: 10px;
+}
+.answer{
+    margin-left: 15px;
+}
+.fieldset{
+    width: 45%;
+    border-radius: 50px;
+}
+.add_text_answer{
+    margin-left: 13%;
+    margin-top: 10px;
+    /*display: flex;*/
+    /*float: left;*/
+}
+.add_answer{
+    margin-left: 13%;
+    margin-bottom: 10px;
+}
+.add_new_question{
+    margin-left: 20%;
+}
+.add_txt_question_{
+
+}
+.add_question{
+    margin-left: 50px;
+    display: flex;
+}
+.check_answer{
+
+}

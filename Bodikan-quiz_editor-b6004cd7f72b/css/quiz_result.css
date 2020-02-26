@@ -1,0 +1,28 @@
+body{
+    background-color: #002752;
+}
+.itog{
+    text-align: center;
+    color: #1a6dca;
+}
+.result{
+    text-align: center;
+    color: #9AC7DA;
+}
+.wish{
+    text-align: center;
+    color: #75ab22;
+}
+.ramka{
+    margin: 30px 30% 10px 30%;
+}
+.back{
+    width: 120px;
+    height: 30px;
+    position: center;
+    margin: 5px 45% 10px 45%;
+    font-weight: bold;
+    color: #0A246A;
+    border-radius: 10px;
+    font-size: 14px;
+}
