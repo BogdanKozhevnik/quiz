@@ -38,11 +38,15 @@ foreach ($quiz_arr as $item=>$value) {
 
 <body>
 <form name="quiz_list" class="quiz_list" id="quiz_list" method="post">
+    <button name="your-results" class="your-results">Посмотреть ваши результаты</button>
     <fieldset class="quiz_list">
         <?PHP
         $i=1;
         while($i<=$count_quiz){
-            echo "<fieldset class=\"quiz_list_second\"><p>№".$id[$i]." ".$title[$i]." Описание: ".$description[$i]."<button name='quiz-$id[$i]'>Перейти</button></p></fieldset>";
+            echo "<fieldset class=\"quiz_list_second\">
+            <p>№".$id[$i]." ".$title[$i]." Описание: ".$description[$i]."
+            <button name='quiz-$id[$i]'>Перейти</button>
+            </p></fieldset>";
             $i+=1;
         }
         $i-=1;
@@ -52,6 +56,11 @@ foreach ($quiz_arr as $item=>$value) {
 </form>
 
 <?php
+
+if(isset($_POST['your-results'])) {
+    header('Location: user_score.php');
+    exit;
+}
 //$user =
 // переход к тесту
 for ($qiuz=1; $qiuz<=$i; $qiuz++) {

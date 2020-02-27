@@ -2,12 +2,6 @@
 
 class ConnectDB {
 
-//   public $servername = "db";
-//   public $username = "root";
-//   public $password = "root";
-//   public $dbname = "default";
-
-
    public function msql() {
        $servername = "db";
        $username = "root";
@@ -16,14 +10,14 @@ class ConnectDB {
 
        $mysqli = new mysqli($servername, $username, $password, $dbname);
     if (!$mysqli) {
-        echo "Ошибка: Невозможно установить соединение с MySQL." . PHP_EOL;
-        echo "Код ошибки errno: " . mysqli_connect_errno() . PHP_EOL;
-        echo "Текст ошибки error: " . mysqli_connect_error() . PHP_EOL;
+//        echo "Ошибка: Невозможно установить соединение с MySQL." . PHP_EOL;
+//        echo "Код ошибки errno: " . mysqli_connect_errno() . PHP_EOL;
+//        echo "Текст ошибки error: " . mysqli_connect_error() . PHP_EOL;
         exit;
     }
 
-       echo "Соединение с MySQL установлено!" . PHP_EOL;
-       echo "Информация о сервере: " . mysqli_get_host_info($mysqli) . PHP_EOL;
+//       echo "Соединение с MySQL установлено!" . PHP_EOL;
+//       echo "Информация о сервере: " . mysqli_get_host_info($mysqli) . PHP_EOL;
        return $mysqli;
 }
 
@@ -33,7 +27,7 @@ class ConnectDB {
     }
 
     public function getActiveUser($email) {
-        $check_users_sql = $this->msql()->query("SELECT `login`, '$email' FROM `users` UNION SELECT `login`, '$email' FROM `admin`");
+        $check_users_sql = $this->msql()->query("SELECT `login`, '$email' FROM `users` where `email`='$email' UNION SELECT `login`, '$email' FROM `admin` where `email`='$email'");
         $check_users = $check_users_sql->fetch_all();
         if (empty($check_users)) {
             echo ("Пользователей нет. база пуста!");
@@ -77,14 +71,6 @@ class ConnectDB {
 //        $name = $name_array['login'];
 //        return $name;
 //    }
-
-//if (mysqli_connect_error()) {
-//    die('Connect Error (' . mysqli_connect_errno() . ') '
-//        . mysqli_connect_error());
-//}
-//if ($mysqli->connect_error) {
-//    die('Ошибка : ('. $mysqli->connect_errno .') '. $mysqli->connect_error);
-//}
 
 //    mysqli_close($mysqli);
 }

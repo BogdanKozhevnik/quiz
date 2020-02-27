@@ -1,0 +1,31 @@
+body {
+   background-color: aliceblue;
+}
+
+.score {
+    width: 40%;
+    /*max-width: 50%;*/
+    height: auto;
+    border-radius: 10%;
+}
+td.quiz-name {
+    word-wrap: break-word; /* Перенос слов */
+    white-space: pre-wrap; /* Перенос в тексте pre-line без пробелов */
+    color: darkgreen;
+    text-align: center;
+    font-size: 17px;
+    font-weight: bold;
+}
+.tb-score {
+    margin: 5px auto 5px auto;
+}
+
+.back_question {
+    font-size: 14px;
+    color: #9AC7DA;
+    background-color: #0A246A;
+    width: 250px;
+    height: 40px;
+    margin: 1% 2% 0 15%;
+    border-radius: 20px;
+}

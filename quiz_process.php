@@ -10,7 +10,7 @@ foreach ($hashMsqlLP as $email=>$hash) {
     }
 }
 // get active user data from db
-$LOGIN_INFORMATION = $new_msql->getActiveUser($email);
+$LOGIN_INFORMATION = $new_msql->getActiveUser($activeUserEmail);
 $activeUserLogin = $LOGIN_INFORMATION[$activeUserEmail];
 
 //require_once 'db_connection.php'; // подключаем скрипт
@@ -101,6 +101,20 @@ if (!isset($_SESSION['next_question'])) {
     $_SESSION['next_question'] = 0;
 }
 
+// get trying of user to do the test
+$quizId = $_GET['quiz_id'];
+$quiz_sql = $mysqli->query("SELECT `title` FROM `quiz` where `id_quiz`='$quizId'");
+$quiz_arr = mysqli_fetch_array($quiz_sql);
+$thiQuizTitle = $quiz_arr[0];
+$try_sql = $mysqli->query("SELECT `try` FROM `quiz_result` where `quiz_title`='$thiQuizTitle' and `login`='$activeUserLogin'");
+$try_arr = $try_sql->fetch_array();
+$try = $try_arr[0];
+// all tries
+$allQuiz_sql = $mysqli->query("SELECT `quiz_title` FROM `quiz_result`");
+$allQuiz_arr = $allQuiz_sql->fetch_all();
+foreach ($allQuiz_arr as $item=>$value) {
+    $tests[] = $value[0];
+}
 // обработчик перехода на след. вопрос
 if (isset($_POST['next_question'])) {
     if($_SESSION['score']<=$count_questions_group["quiz".$quiz_idGet]) {
@@ -127,12 +141,20 @@ if (isset($_POST['next_question'])) {
                     $questionTitle = $questionTitle+$count_answers_group[$question_idarr];
                 }
                 $titleQuestion = $data_quiz_arr[$questionTitle][4];  // title of question
-                // insert resultates in quiz_result
 
+                // insert resultates in quiz_result
                 $res_process = $mysqli->query( "INSERT INTO `quiz_process` (`login`, `email`, `quiz_title`, `title_question`, `user_answer`, `correct_answer`) VALUES ('".$activeUserLogin."','".$activeUserEmail."','".$data_quiz_arr[0][2]."','".$titleQuestion."','".$user_answer."','".$answer_check."')");
                 if ($question_idarr<2) {
-                    $res_result = $mysqli->query( "INSERT INTO `quiz_result` (`login`, `email`, `quiz_title`) VALUES ('".$activeUserLogin."','".$activeUserEmail."','".$data_quiz_arr[0][2]."')");
+                    if (empty($try)) {
+                        $try=$try+1;
+                       $res_result = $mysqli->query( "INSERT INTO `quiz_result` (`login`, `email`, `quiz_title`, `try`) VALUES ('".$activeUserLogin."','".$activeUserEmail."','".$data_quiz_arr[0][2]."','".$try."')");
 
+                    }
+                    else {
+                        $try=$try+1;
+                        $fillResult = $mysqli->query("UPDATE `quiz_result` SET  `try`='$try' WHERE `quiz_title`='$thiQuizTitle' and `login`='$activeUserLogin';");
+
+                    }
                 }
             }
 
@@ -181,7 +203,6 @@ if (isset($_POST['next_question'])) {
             if ($_SESSION['score']>=$count_questions_group["quiz".$quiz_idGet]) {
                 $_SESSION['score'] = 0;
                 $_SESSION['next_question'] = 0;
-//    header('Location: quiz_result.php');
                 $qiuz = $_GET['quiz_id'];
                 header('Location: quiz_result.php?quiz_id=' . $qiuz);
                 exit;

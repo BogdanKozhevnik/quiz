@@ -1,9 +1,18 @@
 .quiz_list{
-    width: 400px;
+    width: 600px;
     border-radius: 10%;
 }
 .quiz_list_second{
-    width: 400px;
+    width: 600px;
     border-radius: 50px;
     /*border-radius: 10%;*/
+}
+.your-results {
+    font-size: 14px;
+    color: #9AC7DA;
+    background-color: #0A246A;
+    width: 250px;
+    height: 40px;
+    margin: 2% 2% 0 25%;
+    border-radius: 20px;
 }

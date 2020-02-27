@@ -12,7 +12,7 @@ foreach ($hashMsqlLP as $email=>$hash) {
     }
 }
 // get active user data from db
-$LOGIN_INFORMATION = $new_msql->getActiveUser($email);
+$LOGIN_INFORMATION = $new_msql->getActiveUser($activeUserEmail);
 $activeUserLogin = $LOGIN_INFORMATION[$activeUserEmail];
 
 include("login/users_login.php");
@@ -49,14 +49,30 @@ while ($row = mysqli_fetch_array($count_true_result_sql)) {
 $count_false_result = $count_result-$count_true_result;
 $result = round((100/$count_result)*$count_true_result,1);
 
-// isset(), is_null(), empty()
+// get trying of user to do the test
+$quizId = $_GET['quiz_id'];
+$quiz_sql = $mysqli->query("SELECT `title` FROM `quiz` where `id_quiz`='$quizId'");
+$quiz_arr = mysqli_fetch_array($quiz_sql);
+$thiQuizTitle = $quiz_arr[0];
+$try_sql = $mysqli->query("SELECT `try` FROM `quiz_result` where `quiz_title`='$thiQuizTitle' and `login`='$activeUserLogin'");
+$try_arr = $try_sql->fetch_array();
+$try = $try_arr[0];
+// all tries
+$allQuiz_sql = $mysqli->query("SELECT `quiz_title` FROM `quiz_result`");
+$allQuiz_arr = $allQuiz_sql->fetch_all();
+foreach ($allQuiz_arr as $item=>$value) {
+$tests[] = $value[0];
+}
+
 // вывод на страницу
 if (isset($count_false_result) and isset($result)) {
     echo "<h2 class='itog'>Вы ответили правельно на  " . $count_true_result . " из " . $count_result . " вопросов</h2>";
     echo "<p><h1 class='result'>Ваш результат = " . $result . "%</h1></p>";
     echo "<p><h3 class='wish'>Желаем успехов!</h3></p>";
-    $res = "" .$count_true_result . " из " . $count_result . " вопросов = ".$result. "%";
-    $fillResult = $mysqli->query("UPDATE `quiz_result` SET `result`='$res' WHERE login='$activeUserLogin';");
+    $res = "" .$count_true_result . " из " . $count_result . " вопросов верно => ".$result. "%";
+
+    $fillResult = $mysqli->query("UPDATE `quiz_result` SET `result`='$res', `try`='$try' WHERE `quiz_title`='$thiQuizTitle' and `login`='$activeUserLogin';");
+
 } else {
     echo "<h2 class='itog'>Вы не отвечали на вопросы!</h2>";
     echo "<p><h3 class='wish'>Выберите тест, и пройдите заново!</h3></p>";
