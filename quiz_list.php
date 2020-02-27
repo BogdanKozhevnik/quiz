@@ -52,10 +52,11 @@ foreach ($quiz_arr as $item=>$value) {
 </form>
 
 <?php
+//$user =
 // переход к тесту
 for ($qiuz=1; $qiuz<=$i; $qiuz++) {
     if(isset($_POST['quiz-'.$qiuz])) {
-        $drop = $mysqli->query( "TRUNCATE TABLE `quiz_result`");
+        $drop = $mysqli->query( "TRUNCATE TABLE `quiz_process`");
         header('Location: quiz_process.php?quiz_id=' . $qiuz);
         exit;
     }

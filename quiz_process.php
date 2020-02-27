@@ -1,7 +1,20 @@
 <!DOCTYPE html>
 <?php
-//include 'db_connection.php';
+include 'db_connection.php';
+$new_msql = new ConnectDB;
+// looking for who is active user now
+$hashMsqlLP = $new_msql->hashMysqlLogPass();
+foreach ($hashMsqlLP as $email=>$hash) {
+    if ($hash == $_COOKIE['verify']) {
+        $activeUserEmail = $email;
+    }
+}
+// get active user data from db
+$LOGIN_INFORMATION = $new_msql->getActiveUser($email);
+$activeUserLogin = $LOGIN_INFORMATION[$activeUserEmail];
+
 //require_once 'db_connection.php'; // подключаем скрипт
+
 include("login/users_login.php");
 $servername="db";
 $username="root";
@@ -94,12 +107,13 @@ if (isset($_POST['next_question'])) {
         @$_SESSION['next_question'] += 1;
         @$question_id = intval($_SESSION['next_question']);
         @$_SESSION['score'] += 1 ;
-        @$question_idarr = $_SESSION['score'];
+        @$question_idarr = intval($_SESSION['score']);
         @$cag=$count_answers_group[$question_idarr];
 
-        foreach ($_POST as $key => $value){
+        foreach ($_POST as $key => $value) {
             $key_value = intval($key);
             if ($key ='on' && $value != "Дальше") {
+                $reset_auto_increment = $mysqli->query("ALTER TABLE `quiz_process` AUTO_INCREMENT = 1");
                 $reset_auto_increment = $mysqli->query("ALTER TABLE `quiz_result` AUTO_INCREMENT = 1");
                 $user_answer_sql = $mysqli->query("SELECT `id_answer`,`answer`,`value` FROM `answers` where `id_answer`='$key_value'");
                 $user_answer_arr = $user_answer_sql->fetch_array();
@@ -114,11 +128,18 @@ if (isset($_POST['next_question'])) {
                 }
                 $titleQuestion = $data_quiz_arr[$questionTitle][4];  // title of question
                 // insert resultates in quiz_result
-                $res = $mysqli->query( "INSERT INTO `quiz_result` (`title_question`, `user_answer`, `correct_answer`) VALUES ('".$titleQuestion."','".$user_answer."','".$answer_check."')");
+
+                $res_process = $mysqli->query( "INSERT INTO `quiz_process` (`login`, `email`, `quiz_title`, `title_question`, `user_answer`, `correct_answer`) VALUES ('".$activeUserLogin."','".$activeUserEmail."','".$data_quiz_arr[0][2]."','".$titleQuestion."','".$user_answer."','".$answer_check."')");
+                if ($question_idarr<2) {
+                    $res_result = $mysqli->query( "INSERT INTO `quiz_result` (`login`, `email`, `quiz_title`) VALUES ('".$activeUserLogin."','".$activeUserEmail."','".$data_quiz_arr[0][2]."')");
+
+                }
             }
+
         }
     }
 }
+
 ?>
 
 <head>

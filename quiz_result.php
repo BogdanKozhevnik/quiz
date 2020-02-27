@@ -2,7 +2,19 @@
 <html lang="ru">
 <?php
 //require_once 'db_connection.php'; // подключаем скрипт
-//include 'db_connection.php';
+include 'db_connection.php';
+$new_msql = new ConnectDB;
+// looking for who is active user now
+$hashMsqlLP = $new_msql->hashMysqlLogPass();
+foreach ($hashMsqlLP as $email=>$hash) {
+    if ($hash == $_COOKIE['verify']) {
+        $activeUserEmail = $email;
+    }
+}
+// get active user data from db
+$LOGIN_INFORMATION = $new_msql->getActiveUser($email);
+$activeUserLogin = $LOGIN_INFORMATION[$activeUserEmail];
+
 include("login/users_login.php");
 $servername="db";
 $username="root";
@@ -26,11 +38,11 @@ error_reporting(0);
 <?php
 
 // обчисление результатов
-@$count_result_sql = $mysqli->query("SELECT COUNT(`id`) FROM `quiz_result`") or die($mysqli->error . __LINE__);
+@$count_result_sql = $mysqli->query("SELECT COUNT(`id`) FROM `quiz_process`") or die($mysqli->error . __LINE__);
 while ($row = mysqli_fetch_array($count_result_sql)) {
     $count_result = intval($row[0]);
 }
-@$count_true_result_sql = $mysqli->query("SELECT COUNT(`correct_answer`) FROM `quiz_result` WHERE `correct_answer`='correct'") or die($mysqli->error . __LINE__);
+@$count_true_result_sql = $mysqli->query("SELECT COUNT(`correct_answer`) FROM `quiz_process` WHERE `correct_answer`='correct'") or die($mysqli->error . __LINE__);
 while ($row = mysqli_fetch_array($count_true_result_sql)) {
     $count_true_result = intval($row[0]);
 }
@@ -43,6 +55,8 @@ if (isset($count_false_result) and isset($result)) {
     echo "<h2 class='itog'>Вы ответили правельно на  " . $count_true_result . " из " . $count_result . " вопросов</h2>";
     echo "<p><h1 class='result'>Ваш результат = " . $result . "%</h1></p>";
     echo "<p><h3 class='wish'>Желаем успехов!</h3></p>";
+    $res = "" .$count_true_result . " из " . $count_result . " вопросов = ".$result. "%";
+    $fillResult = $mysqli->query("UPDATE `quiz_result` SET `result`='$res' WHERE login='$activeUserLogin';");
 } else {
     echo "<h2 class='itog'>Вы не отвечали на вопросы!</h2>";
     echo "<p><h3 class='wish'>Выберите тест, и пройдите заново!</h3></p>";
